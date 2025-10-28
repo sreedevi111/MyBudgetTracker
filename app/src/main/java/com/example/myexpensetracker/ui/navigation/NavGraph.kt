@@ -3,13 +3,17 @@ package com.example.myexpensetracker.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.credentials.CredentialManager
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.myexpensetracker.service.ApiClient
+import com.example.myexpensetracker.service.TokenManager
 import com.example.myexpensetracker.ui.screens.SignInScreen
 import com.example.myexpensetracker.ui.screens.ProfilePage
 import com.example.myexpensetracker.viewmodel.AuthViewModel
+import com.example.myexpensetracker.viewmodel.ProfileViewModel
 
 @Composable
 fun AppNavGraph(
@@ -19,6 +23,11 @@ fun AppNavGraph(
     activity: androidx.activity.ComponentActivity
 ) {
     val isLoading by authViewModel.isLoading.collectAsState()
+
+    // Create ProfileViewModel
+    val apiService = remember { ApiClient.getService(activity) }
+    val tokenManager = remember { TokenManager(activity) }
+    val profileViewModel = remember { ProfileViewModel(apiService, tokenManager) }
 
     NavHost(
         navController = navController,
@@ -35,6 +44,7 @@ fun AppNavGraph(
 
         composable(Screen.Profile.route) {
             ProfilePage(
+                profileViewModel = profileViewModel,
                 onSignOut = {
                     navController.navigate(Screen.Login.route) {
                         popUpTo(Screen.Profile.route) { inclusive = true }

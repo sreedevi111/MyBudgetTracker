@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.credentials.CredentialManager
 import androidx.navigation.compose.rememberNavController
 import com.example.myexpensetracker.service.ApiClient
+import com.example.myexpensetracker.service.TokenManager
 import com.example.myexpensetracker.ui.navigation.AppNavGraph
 import com.example.myexpensetracker.ui.theme.MyExpenseTrackerTheme
 import com.example.myexpensetracker.viewmodel.AuthViewModel
@@ -20,9 +21,10 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val credentialManager = remember { CredentialManager.create(this@MainActivity) }
                 val apiService = remember { ApiClient.getService(this@MainActivity) }
+                val tokenManager = remember { TokenManager(this@MainActivity) }
 
                 // Manual factory for ViewModel without Hilt
-                val authViewModel = remember { AuthViewModel(apiService) }
+                val authViewModel = remember { AuthViewModel(apiService, tokenManager) }
 
                 AppNavGraph(
                     navController = navController,

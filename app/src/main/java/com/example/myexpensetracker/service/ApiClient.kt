@@ -1,8 +1,6 @@
 package com.example.myexpensetracker.service
 
 import android.content.Context
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
@@ -14,25 +12,16 @@ object ApiClient {
 
     private const val BASE_URL = "https://budget-flow-dev-9dcfff7dd9ee.herokuapp.com/"
 
-    private const val PREFS_NAME = "auth_prefs"
-    private const val ACCESS = "access_token"
-    private const val REFRESH = "refresh_token"
-
     private lateinit var apiService: ApiService
+    private lateinit var tokenManager: TokenManager
 
     fun getService(context: Context): ApiService {
         if (::apiService.isInitialized) return apiService
 
-        val prefs = EncryptedSharedPreferences.create(
-            context,
-            PREFS_NAME,
-            MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build(),
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+        tokenManager = TokenManager(context)
 
         val authInterceptor = Interceptor { chain ->
-            val token = prefs.getString(ACCESS, null)
+            val token = tokenManager.getAccessToken()
             val request = chain.request().newBuilder()
             if (!token.isNullOrEmpty()) {
                 request.addHeader("Authorization", "Bearer $token")
@@ -41,7 +30,7 @@ object ApiClient {
         }
 
         val authenticator = Authenticator { _, response ->
-            val refresh = prefs.getString(REFRESH, null) ?: return@Authenticator null
+            val refresh = tokenManager.getRefreshToken() ?: return@Authenticator null
             if (responseCount(response) >= 2) return@Authenticator null
 
             return@Authenticator try {
@@ -53,7 +42,7 @@ object ApiClient {
                     val authApi = retrofit.create(ApiService::class.java)
                     authApi.refreshToken(mapOf("refresh_token" to refresh))
                 }
-                prefs.edit().putString(ACCESS, newToken.access_token).apply()
+                tokenManager.saveTokens(newToken.access_token, refresh)
 
                 response.request.newBuilder()
                     .header("Authorization", "Bearer ${newToken.access_token}")

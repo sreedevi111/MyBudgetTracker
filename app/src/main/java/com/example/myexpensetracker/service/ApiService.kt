@@ -65,7 +65,7 @@ interface ApiService {
 data class GoogleAuthRequest(val id_token: String)
 data class TokenPair(val access_token: String, val refresh_token: String)
 data class AccessToken(val access_token: String)
-data class UserOut(val id: Int, val email: String, val name: String?)
+data class UserOut(val id: Int, val email: String, val name: String?, val avatar_url: String?)
 data class BudgetOut(val id: Int, val name: String, val currency: String, val month_start_day: Int)
 data class BudgetCreate(val name: String, val currency: String, val month_start_day: Int = 1)
 data class BudgetUpdate(val name: String?, val currency: String?, val month_start_day: Int?)

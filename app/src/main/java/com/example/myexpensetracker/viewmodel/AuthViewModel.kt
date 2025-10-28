@@ -15,12 +15,16 @@ import kotlinx.coroutines.launch
 import androidx.lifecycle.viewModelScope
 import com.example.myexpensetracker.service.ApiService
 import com.example.myexpensetracker.service.GoogleAuthRequest
+import com.example.myexpensetracker.service.TokenManager
 import com.example.myexpensetracker.ui.navigation.Screen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class AuthViewModel(private val apiService: ApiService) : ViewModel() {
+class AuthViewModel(
+    private val apiService: ApiService,
+    private val tokenManager: TokenManager
+) : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
@@ -59,6 +63,9 @@ class AuthViewModel(private val apiService: ApiService) : ViewModel() {
                     // API call - this is where the loader is shown
                     val tokenPair = apiService.googleLogin(GoogleAuthRequest(idToken))
                     Log.d("Auth Success", "Access Token: ${tokenPair.access_token}")
+
+                    // Save tokens
+                    tokenManager.saveTokens(tokenPair.access_token, tokenPair.refresh_token)
 
                     _isLoading.value = false
                     navController.navigate(Screen.Profile.route) {
