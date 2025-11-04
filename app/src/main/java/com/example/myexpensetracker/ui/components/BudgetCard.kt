@@ -17,16 +17,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myexpensetracker.service.BudgetCardData
 import com.example.myexpensetracker.ui.theme.PrimaryBlue
-import com.example.myexpensetracker.ui.theme.TextGray
 import com.example.myexpensetracker.ui.theme.TextGrayLight
 import java.util.*
 
 @Composable
 fun BudgetCard(
+    modifier: Modifier = Modifier,
     budgetData: BudgetCardData,
     onClick: () -> Unit = {},
-    modifier: Modifier = Modifier
-) {
+    ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -88,7 +87,7 @@ fun BudgetCard(
                 Text(
                     text = "Spent this month",
                     fontSize = 14.sp,
-                    color = TextGray
+                    color = TextGrayLight
                 )
 
                 Text(
@@ -110,7 +109,7 @@ fun BudgetCard(
                 Text(
                     text = "Remaining",
                     fontSize = 14.sp,
-                    color = TextGray
+                    color = TextGrayLight
                 )
 
                 Text(
@@ -142,7 +141,13 @@ fun BudgetCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Remaining ${formatCurrency(budgetData.remaining, budgetData.currency, includeSymbol = false)}",
+                    text = "Remaining ${
+                        formatCurrency(
+                            budgetData.remaining,
+                            budgetData.currency,
+                            includeSymbol = false
+                        )
+                    }",
                     fontSize = 13.sp,
                     color = PrimaryBlue,
                     fontWeight = FontWeight.Medium
@@ -161,7 +166,11 @@ fun BudgetCard(
 /**
  * Helper function to format currency with proper symbol and decimal places
  */
-private fun formatCurrency(amount: Double, currencyCode: String, includeSymbol: Boolean = true): String {
+private fun formatCurrency(
+    amount: Double,
+    currencyCode: String,
+    includeSymbol: Boolean = true
+): String {
     val currencySymbol = when (currencyCode.uppercase()) {
         "EUR" -> "€"
         "USD" -> "$"

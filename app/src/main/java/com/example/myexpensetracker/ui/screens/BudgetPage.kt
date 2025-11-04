@@ -29,7 +29,7 @@ import com.example.myexpensetracker.ui.components.BudgetCard
 import com.example.myexpensetracker.ui.components.CustomHeader
 import com.example.myexpensetracker.ui.theme.BackgroundWhite
 import com.example.myexpensetracker.ui.theme.PrimaryBlue
-import com.example.myexpensetracker.ui.theme.TextGray
+import com.example.myexpensetracker.ui.theme.TextGrayLight
 import com.example.myexpensetracker.viewmodel.BudgetViewModel
 
 /**
@@ -138,7 +138,7 @@ fun BudgetPageContent(
                             text = error,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
-                            color = TextGray
+                            color = TextGrayLight
                         )
                     }
                 }
@@ -154,7 +154,7 @@ fun BudgetPageContent(
                         text = "No budgets yet",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
-                        color = TextGray
+                        color = TextGrayLight
                     )
                 }
             }
