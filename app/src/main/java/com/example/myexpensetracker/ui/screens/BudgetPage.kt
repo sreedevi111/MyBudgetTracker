@@ -47,6 +47,11 @@ fun BudgetPage(
     val error by viewModel.error.collectAsState()
     val authError by viewModel.authenticationError.collectAsState()
 
+    // Fetch budgets when the screen loads
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        viewModel.refresh()
+    }
+
     // Handle authentication errors
     androidx.compose.runtime.LaunchedEffect(authError) {
         if (authError) {

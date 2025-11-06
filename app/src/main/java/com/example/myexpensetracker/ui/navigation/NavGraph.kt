@@ -11,9 +11,10 @@ import androidx.navigation.compose.composable
 import com.example.myexpensetracker.service.ApiClient
 import com.example.myexpensetracker.service.TokenManager
 import com.example.myexpensetracker.ui.screens.SignInScreen
-import com.example.myexpensetracker.ui.screens.ProfilePage
+import com.example.myexpensetracker.ui.screens.MainScreen
 import com.example.myexpensetracker.viewmodel.AuthViewModel
 import com.example.myexpensetracker.viewmodel.ProfileViewModel
+import com.example.myexpensetracker.viewmodel.BudgetViewModel
 
 @Composable
 fun AppNavGraph(
@@ -24,10 +25,11 @@ fun AppNavGraph(
 ) {
     val isLoading by authViewModel.isLoading.collectAsState()
 
-    // Create ProfileViewModel
+    // Create ViewModels
     val apiService = remember { ApiClient.getService(activity) }
     val tokenManager = remember { TokenManager(activity) }
     val profileViewModel = remember { ProfileViewModel(apiService, tokenManager) }
+    val budgetViewModel = remember { BudgetViewModel(apiService) }
 
     NavHost(
         navController = navController,
@@ -42,13 +44,17 @@ fun AppNavGraph(
             )
         }
 
-        composable(Screen.Profile.route) {
-            ProfilePage(
+        composable(Screen.Main.route) {
+            MainScreen(
                 profileViewModel = profileViewModel,
+                budgetViewModel = budgetViewModel,
                 onSignOut = {
                     navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Profile.route) { inclusive = true }
+                        popUpTo(Screen.Main.route) { inclusive = true }
                     }
+                },
+                onCreateBudget = {
+                    // TODO: Navigate to create budget screen
                 }
             )
         }

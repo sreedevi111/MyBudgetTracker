@@ -19,11 +19,11 @@ import com.example.myexpensetracker.viewmodel.ProfileViewModel
 
 @Composable
 fun MainScreen(
+    modifier: Modifier = Modifier,
     profileViewModel: ProfileViewModel,
     budgetViewModel: BudgetViewModel,
     onSignOut: () -> Unit,
     onCreateBudget: () -> Unit = {},
-    modifier: Modifier = Modifier
 ) {
     var selectedTab by remember { mutableIntStateOf(1) } // Start with Profile tab (index 1)
 

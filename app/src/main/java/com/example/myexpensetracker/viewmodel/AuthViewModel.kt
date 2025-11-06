@@ -68,7 +68,7 @@ class AuthViewModel(
                     tokenManager.saveTokens(tokenPair.access_token, tokenPair.refresh_token)
 
                     _isLoading.value = false
-                    navController.navigate(Screen.Profile.route) {
+                    navController.navigate(Screen.Main.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 }
